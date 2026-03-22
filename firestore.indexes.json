@@ -1,0 +1,33 @@
+{
+    "indexes": [
+        {
+            "collectionGroup": "temas",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "asignaturaId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "numeroTema",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "temas",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "etiquetas",
+                    "arrayConfig": "CONTAINS"
+                },
+                {
+                    "fieldPath": "numeroTema",
+                    "order": "ASCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": []
+}

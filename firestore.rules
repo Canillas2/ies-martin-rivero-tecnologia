@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función helper para verificar si el usuario es admin
+    function isAdmin() {
+      return request.auth != null && 
+             exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'admin';
+    }
+    
+    // Cursos: lectura pública, escritura solo admin
+    match /cursos/{cursoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Asignaturas: lectura pública, escritura solo admin
+    match /asignaturas/{asignaturaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Temas: lectura pública, escritura solo admin
+    match /temas/{temaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Usuarios: solo lectura para el propio usuario y admin
+    match /usuarios/{userId} {
+      allow read: if request.auth != null && 
+                     (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+    
+    // Comentarios: lectura pública de aprobados, escritura autenticada
+    match /comentarios/{comentarioId} {
+      allow read: if resource.data.aprobado == true || isAdmin();
+      allow create: if request.auth != null;
+      allow update, delete: if isAdmin();
+    }
+  }
+}
